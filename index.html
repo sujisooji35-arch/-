@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kang Pooreum — Todo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pretendard:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: #0a0a0a;
+    min-height: 100vh;
+    color: #f0f0f0;
+  }
+
+  /* ── 헤더 ── */
+  .hero {
+    background: #0a0a0a;
+    border-bottom: 1px solid #1e1e1e;
+    padding: 1.2rem 1.5rem;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-handle {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 4px 13px;
+    letter-spacing: 1px;
+  }
+  .hero-date {
+    font-size: 12px;
+    color: #444;
+  }
+
+  /* ── 컨테이너 ── */
+  .container { max-width: 640px; margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
+
+  /* ── 통계 ── */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+  .stat {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .stat-num { font-size: 26px; font-weight: 600; color: #fff; }
+  .stat-num.blue { color: #60a5fa; }
+  .stat-num.green { color: #4ade80; }
+  .stat-label { font-size: 11px; color: #aaa; margin-top: 3px; letter-spacing: 0.5px; }
+
+  /* ── 입력 카드 ── */
+  .input-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 1rem;
+  }
+  .input-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .input-row input[type="text"] {
+    flex: 1; min-width: 120px;
+    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 12px;
+    font-size: 14px; font-family: inherit; outline: none;
+    background: #1a1a1a; color: #f0f0f0;
+  }
+  .input-row input[type="text"]::placeholder { color: #444; }
+  .input-row input[type="text"]:focus { border-color: #555; }
+  .input-row input[type="date"] {
+    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 10px;
+    font-size: 13px; font-family: inherit; outline: none;
+    background: #1a1a1a; color: #aaa; cursor: pointer; width: 140px;
+    color-scheme: dark;
+  }
+  .input-row input[type="date"]:focus { border-color: #555; }
+  .input-row select {
+    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 10px;
+    font-size: 13px; font-family: inherit; outline: none;
+    background: #1a1a1a; color: #ccc; cursor: pointer;
+  }
+  .add-btn {
+    background: #fff; color: #0a0a0a; border: none; border-radius: 8px;
+    padding: 9px 18px; font-size: 14px; font-weight: 600; font-family: inherit;
+    cursor: pointer; white-space: nowrap; letter-spacing: 0.3px;
+  }
+  .add-btn:hover { background: #e0e0e0; }
+  .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── 필터 ── */
+  .filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .filter-btn {
+    font-size: 12px; padding: 4px 12px; border-radius: 20px; cursor: pointer;
+    background: transparent; border: 1px solid #2a2a2a; color: #bbb; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #555; color: #ddd; }
+  .filter-btn.active { background: #fff; color: #0a0a0a; border-color: #fff; font-weight: 500; }
+
+  /* ── 할 일 목록 ── */
+  .todo-list { display: flex; flex-direction: column; gap: 5px; }
+  .todo-item {
+    display: flex; align-items: center; gap: 12px;
+    background: #111; border: 1px solid #1e1e1e; border-radius: 12px;
+    padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  }
+  .todo-item:hover { border-color: #333; background: #141414; }
+  .todo-item.overdue { border-color: #4a1a1a; background: #120d0d; }
+  .todo-item.overdue:hover { border-color: #6b2020; }
+
+  .check-area {
+    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #333;
+    background: transparent; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; pointer-events: none;
+  }
+  .check-area.checked { background: #4ade80; border-color: #4ade80; }
+  .check-icon { display: none; }
+  .check-area.checked .check-icon { display: block; }
+
+  .todo-main { flex: 1; min-width: 0; }
+  .todo-text { font-size: 14px; line-height: 1.4; color: #e8e8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .todo-due {
+    font-size: 12px; font-weight: 600; margin-top: 5px;
+    display: inline-flex; align-items: center;
+    padding: 3px 9px; border-radius: 7px; border: 1px solid transparent;
+  }
+  .todo-due.normal { color: #93c5fd; background: #17233a; border-color: #223452; }
+  .todo-due.soon { color: #fbbf24; background: #3a2f10; border-color: #5c4a15; }
+  .todo-due.overdue { color: #f87171; background: #3a1414; border-color: #5c1f1f; }
+  .todo-due.today { color: #60a5fa; background: #142236; border-color: #1e3554; }
+
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 8px; white-space: nowrap; font-weight: 500; }
+  .badge.업무 { background: #1e3a5f; color: #93c5fd; }
+  .badge.개인 { background: #14352a; color: #6ee7b7; }
+  .badge.기타 { background: #1e1e1e; color: #666; }
+
+  .del-btn {
+    background: transparent; border: none; cursor: pointer; color: #333;
+    font-size: 16px; padding: 4px; line-height: 1; transition: color 0.15s; flex-shrink: 0;
+  }
+  .del-btn:hover { color: #f87171; }
+
+  .empty { text-align: center; color: #444; font-size: 13px; padding: 3rem 0; }
+  .loading { text-align: center; color: #444; font-size: 13px; padding: 2rem 0; }
+
+  /* ── 모달 ── */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #111; border: 1px solid #2a2a2a;
+    border-radius: 18px; padding: 1.5rem; width: 300px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  }
+  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #fff; }
+  .modal-sub { font-size: 12px; color: #555; margin-bottom: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal input {
+    width: 100%; border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 12px;
+    font-size: 14px; font-family: inherit; outline: none; margin-bottom: 8px;
+    background: #1a1a1a; color: #f0f0f0;
+  }
+  .modal input::placeholder { color: #444; }
+  .modal input:focus { border-color: #555; }
+  .modal-err { font-size: 12px; color: #f87171; margin-bottom: 10px; display: none; }
+  .modal-err.show { display: block; }
+  .modal-btns { display: flex; gap: 8px; }
+  .btn-confirm { flex: 1; border: none; border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit; cursor: pointer; font-weight: 500; }
+  .btn-confirm.green { background: #4ade80; color: #0a0a0a; }
+  .btn-confirm.green:hover { background: #22c55e; }
+  .btn-confirm.red { background: #f87171; color: #0a0a0a; }
+  .btn-confirm.red:hover { background: #ef4444; }
+  .btn-cancel { flex: 1; background: transparent; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit; cursor: pointer; color: #666; }
+  .btn-cancel:hover { background: #1a1a1a; color: #aaa; }
+
+  /* ── 토스트 ── */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: #fff; color: #0a0a0a; padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.25s;
+    pointer-events: none; white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="hero">
+  <span class="hero-handle">Kang Pooreum</span>
+  <span class="hero-date" id="today-date"></span>
+</div>
+
+<div class="container">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-total">—</div>
+      <div class="stat-label">전체</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num blue" id="stat-todo">—</div>
+      <div class="stat-label">미완료</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num green" id="stat-done">—</div>
+      <div class="stat-label">완료</div>
+    </div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-row">
+      <input type="text" id="todo-input" placeholder="할 일을 입력하세요..." maxlength="100" />
+      <input type="date" id="due-input" />
+      <select id="cat-select">
+        <option value="업무">업무</option>
+        <option value="개인">개인</option>
+        <option value="기타">기타</option>
+      </select>
+      <button class="add-btn" id="add-btn" onclick="addTodo()">추가</button>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setFilter('all', this)">전체</button>
+      <button class="filter-btn" onclick="setFilter('todo', this)">미완료</button>
+      <button class="filter-btn" onclick="setFilter('done', this)">완료</button>
+      <button class="filter-btn" onclick="setFilter('overdue', this)">⚠️ 기한초과</button>
+      <button class="filter-btn" onclick="setFilter('업무', this)">업무</button>
+      <button class="filter-btn" onclick="setFilter('개인', this)">개인</button>
+      <button class="filter-btn" onclick="setFilter('기타', this)">기타</button>
+    </div>
+  </div>
+
+  <div id="todo-list"><div class="loading">불러오는 중...</div></div>
+</div>
+
+<!-- 모달 -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">확인</h3>
+    <div class="modal-sub" id="modal-sub"></div>
+    <input type="password" id="pw-input" placeholder="비밀번호 입력 (1234)" maxlength="10" />
+    <div class="modal-err" id="pw-err">비밀번호가 올바르지 않습니다.</div>
+    <div class="modal-btns">
+      <button class="btn-confirm green" id="btn-confirm" onclick="confirmAction()">확인</button>
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://jviauhteahruonmfyxhq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2aWF1aHRlYWhydW9ubWZ5eGhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNzAwNDQsImV4cCI6MjEwMDc0NjA0NH0.3fYxGzkVDp4myBtfhZML2omQOKWNA7GbvpV_RRXfk3k';
+const PASS = '1234';
+const TABLE = 'gtodo_items';
+
+let todos = [];
+let filter = 'all';
+let pendingAction = null;
+
+const headers = {
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`
+};
+
+const now = new Date();
+document.getElementById('today-date').textContent =
+  `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${['SUN','MON','TUE','WED','THU','FRI','SAT'][now.getDay()]}`;
+
+function todayStr() { return now.toLocaleDateString('sv-SE'); }
+
+async function fetchTodos() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=due_date.asc.nullsfirst,created_at.desc`, { headers });
+    todos = await res.json();
+    render();
+  } catch(e) {
+    document.getElementById('todo-list').innerHTML = '<div class="empty">데이터를 불러오지 못했어요</div>';
+  }
+}
+
+async function addTodo() {
+  const input = document.getElementById('todo-input');
+  const dueInput = document.getElementById('due-input');
+  const cat = document.getElementById('cat-select').value;
+  const text = input.value.trim();
+  if (!text) { input.focus(); return; }
+  const btn = document.getElementById('add-btn');
+  btn.disabled = true;
+  const body = { text, category: cat, done: false };
+  if (dueInput.value) body.due_date = dueInput.value;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=representation' },
+      body: JSON.stringify(body)
+    });
+    const [item] = await res.json();
+    todos.unshift(item);
+    todos.sort((a, b) => {
+      if (!a.due_date && !b.due_date) return 0;
+      if (!a.due_date) return -1;
+      if (!b.due_date) return 1;
+      return a.due_date.localeCompare(b.due_date);
+    });
+    input.value = ''; dueInput.value = ''; input.focus();
+    render(); showToast('추가됐어요 ✓');
+  } catch(e) { showToast('추가 실패'); }
+  finally { btn.disabled = false; }
+}
+
+function clickItem(id, e) {
+  if (e.target.closest('.del-btn')) return;
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  pendingAction = { type: 'done', id };
+  document.getElementById('modal-title').textContent = item.done ? '↩️ 완료 취소' : '✅ 완료 처리';
+  document.getElementById('modal-sub').textContent = `"${item.text}"`;
+  const btn = document.getElementById('btn-confirm');
+  btn.className = 'btn-confirm ' + (item.done ? 'red' : 'green');
+  btn.textContent = item.done ? '취소하기' : '완료하기';
+  openModal();
+}
+
+function askDelete(id, e) {
+  e.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  pendingAction = { type: 'delete', id };
+  document.getElementById('modal-title').textContent = '🗑️ 삭제 확인';
+  document.getElementById('modal-sub').textContent = `"${item.text}"`;
+  const btn = document.getElementById('btn-confirm');
+  btn.className = 'btn-confirm red';
+  btn.textContent = '삭제하기';
+  openModal();
+}
+
+function openModal() {
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-err').classList.remove('show');
+  document.getElementById('overlay').classList.add('show');
+  setTimeout(() => document.getElementById('pw-input').focus(), 50);
+}
+
+async function confirmAction() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw !== PASS) {
+    document.getElementById('pw-err').classList.add('show');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+    return;
+  }
+  if (!pendingAction) return;
+  if (pendingAction.type === 'done') {
+    const item = todos.find(t => t.id === pendingAction.id);
+    if (item) {
+      const newDone = !item.done;
+      item.done = newDone;
+      render();
+      await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${pendingAction.id}`, {
+        method: 'PATCH', headers, body: JSON.stringify({ done: newDone })
+      });
+      showToast(newDone ? '완료 처리됐어요 ✓' : '완료 취소됐어요');
+    }
+  } else if (pendingAction.type === 'delete') {
+    await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${pendingAction.id}`, { method: 'DELETE', headers });
+    todos = todos.filter(t => t.id !== pendingAction.id);
+    render();
+    showToast('삭제됐어요');
+  }
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  pendingAction = null;
+}
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function getDueStatus(due_date) {
+  if (!due_date) return null;
+  const today = todayStr();
+  const diff = Math.ceil((new Date(due_date) - new Date(today)) / 86400000);
+  if (diff < 0) return 'overdue';
+  if (diff === 0) return 'today';
+  if (diff <= 2) return 'soon';
+  return 'normal';
+}
+
+function formatDueLabel(due_date) {
+  if (!due_date) return '';
+  const today = todayStr();
+  const diff = Math.ceil((new Date(due_date) - new Date(today)) / 86400000);
+  const [y, m, d] = due_date.split('-');
+  const dateStr = `${parseInt(m)}/${parseInt(d)}`;
+  if (diff < 0) return `📛 ${dateStr} (${Math.abs(diff)}일 초과)`;
+  if (diff === 0) return `🔵 오늘 마감`;
+  if (diff === 1) return `🟡 내일 마감`;
+  if (diff <= 2) return `🟡 ${dateStr} (${diff}일 남음)`;
+  return `📅 ${dateStr} (${diff}일 남음)`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function render() {
+  const list = document.getElementById('todo-list');
+  const today = todayStr();
+  let visible = todos.filter(t => {
+    if (filter === 'todo') return !t.done;
+    if (filter === 'done') return t.done;
+    if (filter === 'overdue') return !t.done && t.due_date && t.due_date < today;
+    if (['업무','개인','기타'].includes(filter)) return t.category === filter && !t.done;
+    return !t.done;
+  });
+  document.getElementById('stat-total').textContent = todos.length;
+  document.getElementById('stat-todo').textContent = todos.filter(t => !t.done).length;
+  document.getElementById('stat-done').textContent = todos.filter(t => t.done).length;
+  if (visible.length === 0) {
+    list.innerHTML = `<div class="empty">${filter === 'done' ? '완료한 항목이 없어요' : '할 일이 없어요 🎉'}</div>`;
+    return;
+  }
+  list.innerHTML = visible.map(t => {
+    const status = getDueStatus(t.due_date);
+    const isOverdue = !t.done && status === 'overdue';
+    const dueLabel = formatDueLabel(t.due_date);
+    return `
+    <div class="todo-item ${isOverdue ? 'overdue' : ''}" onclick="clickItem(${t.id}, event)">
+      <div class="check-area ${t.done ? 'checked' : ''}">
+        <svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6l3 3 5-5" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="todo-main">
+        <div class="todo-text">${escHtml(t.text)}</div>
+        ${dueLabel ? `<div class="todo-due ${status||''}">${dueLabel}</div>` : ''}
+      </div>
+      <span class="badge ${t.category}">${t.category}</span>
+      <button class="del-btn" onclick="askDelete(${t.id}, event)" title="삭제">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+document.getElementById('todo-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTodo();
+});
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmAction();
+  if (e.key === 'Escape') closeModal();
+});
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+
+fetchTodos();
+</script>
+</body>
+</html>
