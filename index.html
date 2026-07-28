@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kang Pureum — Todo</title>
+<title>Kang PuReum — Todo</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pretendard:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Pretendard', -apple-system, sans-serif;
-    background: #0a0a0a;
+    background: #060b12;
     min-height: 100vh;
-    color: #f0f0f0;
+    color: #e8f1f5;
   }
 
   /* ── 헤더 ── */
   .hero {
-    background: #0a0a0a;
-    border-bottom: 1px solid #1e1e1e;
+    background: linear-gradient(135deg, #081018 0%, #0a1620 100%);
+    border-bottom: 1px solid #14232f;
     padding: 1.2rem 1.5rem;
     max-width: 640px;
     margin: 0 auto;
@@ -28,16 +28,16 @@
   .hero-handle {
     font-size: 13px;
     font-weight: 500;
-    color: #fff;
-    background: #1e1e1e;
-    border: 1px solid #333;
+    color: #e8f8f5;
+    background: linear-gradient(135deg, #123642, #0d2836);
+    border: 1px solid #1e4d5c;
     border-radius: 20px;
     padding: 4px 13px;
     letter-spacing: 1px;
   }
   .hero-date {
     font-size: 12px;
-    color: #444;
+    color: #3a5a68;
   }
 
   /* ── 컨테이너 ── */
@@ -46,20 +46,20 @@
   /* ── 통계 ── */
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.25rem; }
   .stat {
-    background: #111;
-    border: 1px solid #222;
+    background: #0b141c;
+    border: 1px solid #16232e;
     border-radius: 12px;
     padding: 14px 16px;
   }
-  .stat-num { font-size: 26px; font-weight: 600; color: #fff; }
-  .stat-num.blue { color: #60a5fa; }
-  .stat-num.green { color: #4ade80; }
-  .stat-label { font-size: 11px; color: #aaa; margin-top: 3px; letter-spacing: 0.5px; }
+  .stat-num { font-size: 26px; font-weight: 600; color: #e8f1f5; }
+  .stat-num.blue { color: #38bdf8; }
+  .stat-num.green { color: #2dd4bf; }
+  .stat-label { font-size: 11px; color: #5a7684; margin-top: 3px; letter-spacing: 0.5px; }
 
   /* ── 입력 카드 ── */
   .input-card {
-    background: #111;
-    border: 1px solid #222;
+    background: #0b141c;
+    border: 1px solid #16232e;
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 1rem;
@@ -67,125 +67,125 @@
   .input-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
   .input-row input[type="text"] {
     flex: 1; min-width: 120px;
-    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 12px;
+    border: 1px solid #1a2b38; border-radius: 8px; padding: 9px 12px;
     font-size: 14px; font-family: inherit; outline: none;
-    background: #1a1a1a; color: #f0f0f0;
+    background: #0f1c26; color: #e8f1f5;
   }
-  .input-row input[type="text"]::placeholder { color: #444; }
-  .input-row input[type="text"]:focus { border-color: #555; }
+  .input-row input[type="text"]::placeholder { color: #3a5563; }
+  .input-row input[type="text"]:focus { border-color: #2dd4bf; }
   .input-row input[type="date"] {
-    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 10px;
+    border: 1px solid #1a2b38; border-radius: 8px; padding: 9px 10px;
     font-size: 13px; font-family: inherit; outline: none;
-    background: #1a1a1a; color: #aaa; cursor: pointer; width: 140px;
+    background: #0f1c26; color: #8fa9b5; cursor: pointer; width: 140px;
     color-scheme: dark;
   }
-  .input-row input[type="date"]:focus { border-color: #555; }
+  .input-row input[type="date"]:focus { border-color: #2dd4bf; }
   .input-row select {
-    border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 10px;
+    border: 1px solid #1a2b38; border-radius: 8px; padding: 9px 10px;
     font-size: 13px; font-family: inherit; outline: none;
-    background: #1a1a1a; color: #ccc; cursor: pointer;
+    background: #0f1c26; color: #c3d5dd; cursor: pointer;
   }
   .add-btn {
-    background: #fff; color: #0a0a0a; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, #2dd4bf, #38bdf8); color: #04141a; border: none; border-radius: 8px;
     padding: 9px 18px; font-size: 14px; font-weight: 600; font-family: inherit;
     cursor: pointer; white-space: nowrap; letter-spacing: 0.3px;
   }
-  .add-btn:hover { background: #e0e0e0; }
+  .add-btn:hover { filter: brightness(1.1); }
   .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* ── 필터 ── */
   .filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
   .filter-btn {
     font-size: 12px; padding: 4px 12px; border-radius: 20px; cursor: pointer;
-    background: transparent; border: 1px solid #2a2a2a; color: #bbb; font-family: inherit;
+    background: transparent; border: 1px solid #1a2b38; color: #7c95a1; font-family: inherit;
     transition: all 0.15s;
   }
-  .filter-btn:hover { border-color: #555; color: #ddd; }
-  .filter-btn.active { background: #fff; color: #0a0a0a; border-color: #fff; font-weight: 500; }
+  .filter-btn:hover { border-color: #2dd4bf; color: #cfeae4; }
+  .filter-btn.active { background: linear-gradient(135deg, #2dd4bf, #38bdf8); color: #04141a; border-color: transparent; font-weight: 500; }
 
   /* ── 할 일 목록 ── */
   .todo-list { display: flex; flex-direction: column; gap: 5px; }
   .todo-item {
     display: flex; align-items: center; gap: 12px;
-    background: #111; border: 1px solid #1e1e1e; border-radius: 12px;
+    background: #0b141c; border: 1px solid #142330; border-radius: 12px;
     padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
   }
-  .todo-item:hover { border-color: #333; background: #141414; }
-  .todo-item.overdue { border-color: #4a1a1a; background: #120d0d; }
-  .todo-item.overdue:hover { border-color: #6b2020; }
+  .todo-item:hover { border-color: #24445a; background: #0e1a24; }
+  .todo-item.overdue { border-color: #4a1e2a; background: #150d10; }
+  .todo-item.overdue:hover { border-color: #6b2a3a; }
 
   .check-area {
-    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #333;
+    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #24404f;
     background: transparent; display: flex; align-items: center;
     justify-content: center; flex-shrink: 0; pointer-events: none;
   }
-  .check-area.checked { background: #4ade80; border-color: #4ade80; }
+  .check-area.checked { background: linear-gradient(135deg, #2dd4bf, #38bdf8); border-color: transparent; }
   .check-icon { display: none; }
   .check-area.checked .check-icon { display: block; }
 
   .todo-main { flex: 1; min-width: 0; }
-  .todo-text { font-size: 14px; line-height: 1.4; color: #e8e8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .todo-text { font-size: 14px; line-height: 1.4; color: #dceaef; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .todo-due {
     font-size: 12px; font-weight: 600; margin-top: 5px;
     display: inline-flex; align-items: center;
     padding: 3px 9px; border-radius: 7px; border: 1px solid transparent;
   }
-  .todo-due.normal { color: #93c5fd; background: #17233a; border-color: #223452; }
-  .todo-due.soon { color: #fbbf24; background: #3a2f10; border-color: #5c4a15; }
-  .todo-due.overdue { color: #f87171; background: #3a1414; border-color: #5c1f1f; }
-  .todo-due.today { color: #60a5fa; background: #142236; border-color: #1e3554; }
+  .todo-due.normal { color: #7dd3fc; background: #0e2436; border-color: #1a3d54; }
+  .todo-due.soon { color: #5eead4; background: #0d2c28; border-color: #17493f; }
+  .todo-due.overdue { color: #fb7185; background: #331018; border-color: #5c1f2a; }
+  .todo-due.today { color: #38bdf8; background: #0c2231; border-color: #17415a; }
 
   .badge { font-size: 11px; padding: 2px 8px; border-radius: 8px; white-space: nowrap; font-weight: 500; }
-  .badge.업무 { background: #1e3a5f; color: #93c5fd; }
-  .badge.개인 { background: #14352a; color: #6ee7b7; }
-  .badge.기타 { background: #1e1e1e; color: #666; }
+  .badge.업무 { background: #133447; color: #7dd3fc; }
+  .badge.개인 { background: #0e3330; color: #5eead4; }
+  .badge.기타 { background: #16232e; color: #5a7684; }
 
   .del-btn {
-    background: transparent; border: none; cursor: pointer; color: #333;
+    background: transparent; border: none; cursor: pointer; color: #24404f;
     font-size: 16px; padding: 4px; line-height: 1; transition: color 0.15s; flex-shrink: 0;
   }
-  .del-btn:hover { color: #f87171; }
+  .del-btn:hover { color: #fb7185; }
 
-  .empty { text-align: center; color: #444; font-size: 13px; padding: 3rem 0; }
-  .loading { text-align: center; color: #444; font-size: 13px; padding: 2rem 0; }
+  .empty { text-align: center; color: #3a5563; font-size: 13px; padding: 3rem 0; }
+  .loading { text-align: center; color: #3a5563; font-size: 13px; padding: 2rem 0; }
 
   /* ── 모달 ── */
   .overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7); z-index: 100;
+    background: rgba(2,8,14,0.75); z-index: 100;
     align-items: center; justify-content: center;
   }
   .overlay.show { display: flex; }
   .modal {
-    background: #111; border: 1px solid #2a2a2a;
+    background: #0b141c; border: 1px solid #1a2b38;
     border-radius: 18px; padding: 1.5rem; width: 300px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.8);
   }
-  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #fff; }
-  .modal-sub { font-size: 12px; color: #555; margin-bottom: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #e8f1f5; }
+  .modal-sub { font-size: 12px; color: #4a6774; margin-bottom: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .modal input {
-    width: 100%; border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 12px;
+    width: 100%; border: 1px solid #1a2b38; border-radius: 8px; padding: 9px 12px;
     font-size: 14px; font-family: inherit; outline: none; margin-bottom: 8px;
-    background: #1a1a1a; color: #f0f0f0;
+    background: #0f1c26; color: #e8f1f5;
   }
-  .modal input::placeholder { color: #444; }
-  .modal input:focus { border-color: #555; }
-  .modal-err { font-size: 12px; color: #f87171; margin-bottom: 10px; display: none; }
+  .modal input::placeholder { color: #3a5563; }
+  .modal input:focus { border-color: #2dd4bf; }
+  .modal-err { font-size: 12px; color: #fb7185; margin-bottom: 10px; display: none; }
   .modal-err.show { display: block; }
   .modal-btns { display: flex; gap: 8px; }
   .btn-confirm { flex: 1; border: none; border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit; cursor: pointer; font-weight: 500; }
-  .btn-confirm.green { background: #4ade80; color: #0a0a0a; }
-  .btn-confirm.green:hover { background: #22c55e; }
-  .btn-confirm.red { background: #f87171; color: #0a0a0a; }
-  .btn-confirm.red:hover { background: #ef4444; }
-  .btn-cancel { flex: 1; background: transparent; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit; cursor: pointer; color: #666; }
-  .btn-cancel:hover { background: #1a1a1a; color: #aaa; }
+  .btn-confirm.green { background: linear-gradient(135deg, #2dd4bf, #38bdf8); color: #04141a; }
+  .btn-confirm.green:hover { filter: brightness(1.1); }
+  .btn-confirm.red { background: #fb7185; color: #1a0508; }
+  .btn-confirm.red:hover { background: #f43f5e; }
+  .btn-cancel { flex: 1; background: transparent; border: 1px solid #1a2b38; border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit; cursor: pointer; color: #5a7684; }
+  .btn-cancel:hover { background: #0f1c26; color: #a8c0cb; }
 
   /* ── 토스트 ── */
   .toast {
     position: fixed; bottom: 28px; left: 50%;
     transform: translateX(-50%) translateY(8px);
-    background: #fff; color: #0a0a0a; padding: 10px 20px; border-radius: 20px;
+    background: linear-gradient(135deg, #2dd4bf, #38bdf8); color: #04141a; padding: 10px 20px; border-radius: 20px;
     font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.25s;
     pointer-events: none; white-space: nowrap;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
@@ -197,7 +197,7 @@
 
 <!-- 헤더 -->
 <div class="hero">
-  <span class="hero-handle">Kang Pooreum</span>
+  <span class="hero-handle">Kang PuRuem</span>
   <span class="hero-date" id="today-date"></span>
 </div>
 
@@ -447,7 +447,7 @@ function render() {
     <div class="todo-item ${isOverdue ? 'overdue' : ''}" onclick="clickItem(${t.id}, event)">
       <div class="check-area ${t.done ? 'checked' : ''}">
         <svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 6l3 3 5-5" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 6l3 3 5-5" stroke="#04141a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="todo-main">
